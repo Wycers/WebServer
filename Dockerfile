@@ -3,7 +3,7 @@
 # VERSION    1.0.0
 
 FROM daocloud.io/node:5  
-MAINTAINER me@yanbingbing.com
+MAINTAINER Wycer
 
 ENV HTTP_PORT 8000
 

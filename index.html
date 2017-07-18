@@ -1,23 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="ch-zn" dir="ltr">
+
     <head>
-    	<meta charset="UTF-8">
-        <title>Sustc·南方科技大学 QQ群管理</title>
-
-        <link rel="stylesheet" href="../css/uikit.min.css" />
-        <link rel="stylesheet" href="../css/temp.css">
-
-        <script src="../js/jquery-3.2.1.min.js"></script>
-        <script src="../js/uikit.min.js"></script>
-        <script src="../js/components/parallax.min.js"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>福建省信息学竞赛2017夏令营</title>
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png">
+        <link rel="stylesheet" href="../css/uikit.min.css">
+        <link rel="stylesheet" href="../css/uikit.gradient.min.css">
+        <script Language="JavaScript" src="../js/jquery-3.2.1.min.js"></script>
+    
+        <script Language="JavaScript" src="../js/uikit.min.js"></script>
+        <script Language="JavaScript" src="../js/temp.js"></script>
+        <script Language="JavaScript" src="../js/jquery.form.js"></script>
     </head>
+
     <body>
-    	<header class="header">
-    		<div class="header-inner" data-uk-parallax="{opacity:0.1, viewport:0.5}">
-    			<h1>Welcome to SUSTC</h1>
-    			<h2>在这里申请进入南科大家长群。</h2>
-    		</div>
-    	</header>
-    	<div style="height: 200vh"></div>
+
+        <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+
+            <div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-1-1">
+                    <h1 class="uk-heading-large">Day2</h1>
+                    <p class="uk-text-large">Download problemset and Submit your code here.</p>
+                </div>
+            </div>
+
+            <div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-1-1">
+                	<form class="uk-form" action="/upload" method="post" enctype="multipart/form-data" onsubmit="return Runfast();" id="form">
+                		<div class="uk-width-1-1 uk-margin">
+							<div class="uk-alert uk-alert-warning uk-alert-large" data-uk-alert>
+                				<a href="" class="uk-alert-close uk-close"></a>
+    							<h2>0.Foremost</h2>
+    							<h4>0.c++的iosteam数据流速度较慢，在读取大量数据的时候请使用scanf以防超时。</h4>
+    							<h4>1.使用c++的scanf的时候请注意要加<code>#include &ltcstdio&gt</code>，学生端的机子好像不加这句话编译也能过。。但评测时会CE</h4>
+    							<h4>2.评测端为linux，c++选手请使用<code>printf("%lld", a);</code>或者<code>cout&lt&lta;</code>来输出长整形的数据</h4>
+    							<h4>3.记得使用文件读入写出。</h4>
+
+                			</div>
+                		</div>
+	                	<div class="uk-width-1-1 uk-margin">
+	                		<h2>1.Download the problemset.</h2>
+	                		<a href="/files/pro.pdf" class="uk-text-large" download="Day2_problemset.pdf">Day2_problemset.pdf</a>
+	                	</div>
+	                	<div class="uk-width-1-1 uk-margin">
+	                		<h2>2.Input your name.</h2>
+	                		<input type="text" name="name" maxlength="10" required="required" id="name"/>
+	                		<p class="uk-text-middle uk-text-warning">在这里输入学校+姓名 将用于生成你的目录</p>
+                            <button class="uk-button" type="button" id="button">检查已上传的文件</button>
+                            <p class="uk-text-middle uk-text-warning">用于检索目录中的所有文件</p>
+                            <ul class="uk-list uk-list-striped" id="list">
+                                <li>暂无结果</li>
+                            </ul>
+                        </div>
+
+	                	<div class="uk-width-1-1 uk-margin">
+	                		<h2>3.Upload your file.</h2>
+	                        <input type="file" name="code" id="input" size="50" onchange="return check(this);">
+	                        <input type="submit" value="上传文件">
+	                        <p class="uk-text-middle uk-text-warning">只接受后缀名为cpp/c/pas、且文件名按题目规定的文件 之后提交的文件将覆盖之前的相同文件</p>
+                        </div>
+                   	</form>
+                      
+                </div>
+            </div>
+
+        </div>
     </body>
 </html>
