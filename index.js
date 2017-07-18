@@ -1,10 +1,12 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
- 2
+
 var bodyParser = require('body-parser');
 var multer  = require('multer');
- 
+
+var packing = false;
+
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ dest: __dirname + "/temp/"}).array('code'));
@@ -35,38 +37,113 @@ app.get('/query', function(req, res) {
 });
 
 app.post('/upload', function(req, res) {
-    fs.mkdir(__dirname + "/files/" + req.body.name, 0777, function(err) {
-	if (err)
-	    console.log("Catalog " + req.body.name + " has created");
-	else 
-	    console.log("Catalog " + req.body.name + " created");
-	var des_file = __dirname + "/files/" + req.body.name + "/" + req.files[0].originalname;
-	fs.readFile(req.files[0].path, function(err, data) {
-	    fs.writeFile(des_file, data, function(err) {
-		if (err){
-		    console.log(err);
-		    res.end("failed");
-		}
-		else {
-		    response = {
 
-			usr: req.body.name,
-			filename: req.files[0].originalname
-		    };
-		}
-		console.log(response);
-		res.end("success");
+    if (packing) {
+	console.log(req.body.name + " wants to upload but the server is packing now.");
+	res.end("packing");
+    } else {
+	var dir = __dirname + "/files/" + req.body.name;
+	fs.exists(dir, function(exists) {
+	    if (exists == false)
+		fs.mkdir(dir, 0777, function(err) {
+		    if (err) 
+			throw err;
+		    else
+			console.log(dir + "created");
+		});
+	    var file_dir = dir + "/" + req.files[0].originalname;
+	    fs.readFile(req.files[0].path, function(err, data) {
+		fs.writeFile(file_dir, data, function(err) {
+		    if (err){
+			throw err;
+			console.log("failed:" + file_dir);
+			res.end("failed");
+		    }
+		    else {
+			console.log(file_dir);
+			res.end("success");
+		    }
+		}); 
 	    });
-	}); 
-    });
+	});
+    }
 });
+	 
 
 
 var server = app.listen(8000, function() {
-
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log("%s:%s", host, port);
+    console.log("Frontstage is working.");
 });
 
+
+
+var tool = express();
+tool.use(express.static(__dirname));
+tool.use(bodyParser.urlencoded({ extended: false }));
+tool.use(multer({ dest: __dirname + "/temp/"}).array('pdf'));
+
+var admin_server = tool.listen(8081, function() {
+    console.log("Backstage is working.");
+});
+
+tool.get('/', function(req, res) {
+    res.end("= =");
+});
+tool.get('/admin', function(req, res) {
+    
+    res.sendFile(__dirname + "/admin.html");
+});
+
+tool.get('/packing', function(req, res) {
+    if (packing){
+	res.end("packing");
+	return;
+    }
+    packing = true;
+    console.log("Start packing!");
+    var archiver = require('archiver');
+    var output = fs.createWriteStream(__dirname + '/sources.zip');
+    var archive = archiver('zip', {
+	zlib: { level: 9 } // Sets the compression level.
+    });
+
+    output.on('close', function() {
+	console.log(archive.pointer() + ' total bytes');
+	console.log('End packing.');
+	packing = false;
+	res.end("success");
+    });
+
+    archive.on('warning', function(err) {
+	if (err.code === 'ENOENT') {
+	    // log warning
+	} else {
+	    // throw error
+	    throw err;
+	}
+    });
+    archive.on('error', function(err) {
+	throw err;
+    });
+    archive.pipe(output);
+    archive.directory('files/', 'sources');
+    archive.finalize();
+});
+
+
+tool.post('/proupload', function(req, res) {
+    var file_dir = __dirname + "/files/pro.pdf";
+    fs.readFile(req.files[0].path, function(err, data) {
+	fs.writeFile(file_dir, data, function(err) {
+	    if (err){
+		throw err;
+		console.log("failed:" + file_dir);
+		res.end("failed");
+	    }
+	    else {
+		console.log(file_dir);
+		res.end("success");
+	    }
+	}); 
+    });
+});

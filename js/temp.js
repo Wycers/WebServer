@@ -24,15 +24,15 @@ function check(target) {
 }
 
 function QvQ() {
-	if ($("#name").val().indexOf(".") > -1 || $("#name").val().indexOf("/") > -1) {
-		$("#name").val("");
+    if ($("#name").val().indexOf(".") > -1 || $("#name").val().indexOf("/") > -1) {
+	$("#name").val("");
         $("#list").html("<li>请勿输入特殊字符。</li>");
         return;
-	}
-	if ($("#name").val() == "") {
+    }
+    if ($("#name").val() == "") {
         $("#list").html("<li>请勿留空。</li>");
         return;
-	}
+    }
     $.get("/query?usr=" + $("#name").val(), function(data, status) {
         if (data == "nil") 
             $("#list").html("<li>该目录不存在。（目录将在上传文件时自动生成）</li>");
@@ -56,6 +56,8 @@ function Runfast() {
 		alert("上传成功");
 		QvQ();
 	}
+	else if (message == "packing")
+	    alert("正在进行代码拷贝工作，暂停上传，请稍候。");
 	else
 	    alert("上传失败");
     });
