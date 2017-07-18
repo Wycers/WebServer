@@ -64,10 +64,5 @@ function Runfast() {
 }
 
 $(document).ready(function(){
-	var userAgent = navigater.userAgent;
-	if (userAgent.indexOf("Chrome") == -1) {
-		alert("请使用Chrome打开本网页！");
-		$("div").hide();
-	}
     $("#button").click(QvQ);
 });
