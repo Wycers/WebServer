@@ -1,25 +1,27 @@
 function check(target) {
-		fileSize = target.files[0].size; 
-	    if (fileSize > 1024 * 1024) {
-		alert("文件大小超过1MB！");
-		target.value = "";
-		return false;
+    fileSize = target.files[0].size; 
+    if (fileSize > 1024 * 1024) {
+	alert("文件大小超过1MB！");
+	target.value = "";
+	return false;
     }
 
     var name = target.value;
     var type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
-	    if (type != "cpp" && type != "c" && type != "pas") {
-		alert("请上传*.cpp/*.c/*.pas！");
-		target.value = "";
-		return false; 
+    if (type != "cpp" && type != "c" && type != "pas") {
+	alert("请上传*.cpp/*.c/*.pas！");
+	target.value = "";
+	return false; 
     }
 
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.indexOf(".")).toLowerCase();
     if (filename != "workteam" && filename != "" && filename != "") {
-		alert("请按照题目规定的文件名上传！");
-		target.value = "";
-		return false;	
+	alert("请按照题目规定的文件名上传！");
+	target.value = "";
+	return false;	
     }
+    $("#show").val(filename + "." + type);
+    
     return true;
 }
 
@@ -49,18 +51,19 @@ function QvQ() {
 }
 
 function Runfast() {
-	if ($("#input").val() == "")
-		return false;
+    if ($("#input").val() == "")
+	return false;
     $("#form").ajaxSubmit(function(message) {
 	if (message == "success") {
-		alert("上传成功");
-		QvQ();
+	    alert("上传成功");
+	    QvQ();
 	}
 	else if (message == "packing")
 	    alert("正在进行代码拷贝工作，暂停上传，请稍候。");
 	else
 	    alert("上传失败");
     });
+    $("#show").val("");
     $("#input").val("");
     return false; 
 }

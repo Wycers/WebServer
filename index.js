@@ -12,7 +12,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ dest: __dirname + "/temp/"}).array('code'));
 
 app.get('/', function(req, res) {
-    console.log(req.query);
     res.sendFile( __dirname + "/" + "index.html");
 });
 
@@ -56,11 +55,11 @@ app.post('/upload', function(req, res) {
 		fs.writeFile(file_dir, data, function(err) {
 		    if (err){
 			throw err;
-			console.log("failed:" + file_dir);
+			console.log("file uplpad failed:" + file_dir);
 			res.end("failed");
 		    }
 		    else {
-			console.log(file_dir);
+			console.log("file upload success:" + file_dir);
 			res.end("success");
 		    }
 		}); 
@@ -68,7 +67,7 @@ app.post('/upload', function(req, res) {
 	});
     }
 });
-	 
+
 
 
 var server = app.listen(8000, function() {
@@ -90,7 +89,6 @@ tool.get('/', function(req, res) {
     res.end("= =");
 });
 tool.get('/admin', function(req, res) {
-    
     res.sendFile(__dirname + "/admin.html");
 });
 
@@ -137,11 +135,11 @@ tool.post('/proupload', function(req, res) {
 	fs.writeFile(file_dir, data, function(err) {
 	    if (err){
 		throw err;
-		console.log("failed:" + file_dir);
+		console.log("pro file upload failed:" + file_dir);
 		res.end("failed");
 	    }
 	    else {
-		console.log(file_dir);
+		console.log("pro file upload success" + file_dir);
 		res.end("success");
 	    }
 	}); 
