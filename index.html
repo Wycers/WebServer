@@ -10,7 +10,7 @@
         <script Language="JavaScript" src="../js/jquery-3.2.1.min.js"></script>
     
         <script Language="JavaScript" src="../js/uikit.min.js"></script>
-        <script Language="JavaScript" src="../js/temp.js"></script>
+        <script Language="JavaScript" src="../js/user.js"></script>
         <script Language="JavaScript" src="../js/jquery.form.js"></script>
     </head>
 
@@ -43,14 +43,13 @@
 	                	<div class="uk-width-1-1 uk-margin">
 	                		<h2>1.Download the problemset.</h2>
 
-	                		<a href="/pro.zip" class="uk-button uk-button-small uk-text-large uk-icon-cloud-download" download="Day3.zip">Day3.zip</a>
-
+                            <button class="uk-button uk-button-small uk-text-large uk-icon-cloud-download" id="download">Day3.zip</a>
 	                	</div>
                         <form class="uk-form" action="/upload" method="post" enctype="multipart/form-data" onsubmit="return Runfast();" id="form">
 	                	<div class="uk-width-1-1 uk-margin">
 	                		<h2>2.Input your name.</h2>
 	                		<input type="text" name="name" maxlength="10" required="required" id="name"/>
-	                		<p class="uk-text-middle uk-text-warning">在这里输入学校+姓名 将用于生成你的目录</p>
+	                		<p class="uk-text-middle uk-text-warning">在这里输入学校+姓名(示例:<code>福建师大附中黄哲威</code>)将用于生成你的目录</p>
                             <button class="uk-button uk-icon-eye" type="button" id="button">检查已上传的文件</button>
                             <p class="uk-text-middle uk-text-warning">用于检索目录中的所有文件</p>
                             <ul class="uk-list uk-list-striped" id="list">
@@ -62,7 +61,7 @@
 	                		<h2>3.Upload your file.</h2>
 	                        <div class="uk-form-file">
                                 <button class="uk-button uk-icon-search-plus">选择一个文件</button>
-                                <input type="file" name="code" id="input" size="50" onchange="return check(this);">
+                                <input type="file" name="code" id="input" size="50" required="required" onchange="return check(this);">
                                 <input id="show" value="" disabled> 
                             </div>
                             <button type="submit" class="uk-button uk-icon-cloud-upload">上传文件</button>

@@ -5,7 +5,8 @@ var fs = require("fs");
 var bodyParser = require('body-parser');
 var multer  = require('multer');
 
-var packing = false;
+var packing = false, pause = true;
+var first="", second="", third="";
 
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,6 +16,9 @@ app.get('/', function(req, res) {
     res.sendFile( __dirname + "/" + "index.html");
 });
 
+app.get('/pro.zip', function(req, res) {
+    res.end("No way~");
+});
 app.get('/files', function(req, res) {
     res.end("No way~");
 });
@@ -35,41 +39,68 @@ app.get('/query', function(req, res) {
     });  
 });
 
-app.post('/upload', function(req, res) {
+app.get('/status', function(req, res) {
+    res.end(pause ? "off" : "on");
+});
 
+app.get('/download', function(req, res) {
+    if (pause) {
+	console.log(req.body.name + " wants to download but the server is pauing");
+	res.end("pause");
+	return;
+    }
+    res.sendFile(__dirname + "/pro.zip");
+});
+
+app.post('/upload', function(req, res) {
+    if (pause) {
+	console.log(req.body.name + " wants to upload but the server is pausing");
+	res.end("pause");
+	return;
+    }
     if (packing) {
 	console.log(req.body.name + " wants to upload but the server is packing now.");
 	res.end("packing");
-    } else {
-	var dir = __dirname + "/files/" + req.body.name;
-	fs.exists(dir, function(exists) {
-	    if (exists == false)
-		fs.mkdir(dir, 0777, function(err) {
-		    if (err) 
-			throw err;
-		    else
-			console.log(dir + "created");
-		});
-	    if (req.files.length == 0) {
-		res.end("failed");
-		return;
-	    }
-	    var file_dir = dir + "/" + req.files[0].originalname;
-	    fs.readFile(req.files[0].path, function(err, data) {
-		fs.writeFile(file_dir, data, function(err) {
-		    if (err){
-			throw err;
-			console.log("file uplpad failed:" + file_dir);
-			res.end("failed");
-		    }
-		    else {
-			console.log("file upload success:" + file_dir);
-			res.end("success");
-		    }
-		}); 
-	    });
-	});
+	return;
     }
+    if (req.files.length == 0) {
+	console.log(req.body.name + " wants to upload but failed. (No file)");
+	res.end("failed");
+	return;
+    }
+    var name = req.files[0].originalname;
+    var filename = name.substring(name.lastIndexOf("\\") + 1, name.lastIndexOf(".")).toLowerCase();
+    if (filename != first && filename != second && filename != third) {
+	res.end("illegal");
+	return;
+    }
+
+    
+    var dir = __dirname + "/files/" + req.body.name;
+    fs.exists(dir, function(exists) {
+	if (exists == false)
+	    fs.mkdir(dir, 0777, function(err) {
+		if (err) 
+		    throw err;
+		else
+		    console.log(dir + "created");
+	    });
+	var file_dir = dir + "/" + req.files[0].originalname;
+	fs.readFile(req.files[0].path, function(err, data) {
+	    fs.writeFile(file_dir, data, function(err) {
+		if (err) {
+		    throw err;
+		    console.log("file uplpad failed: " + file_dir);
+		    res.end("failed");
+		}
+		else {
+		    console.log("file upload success: " + file_dir);
+		    res.end("success");
+		}
+	    }); 
+	});
+    });
+    
 });
 
 
@@ -80,10 +111,14 @@ var server = app.listen(8000, function() {
 
 
 
+
+
+
 var tool = express();
 tool.use(express.static(__dirname));
-tool.use(bodyParser.urlencoded({ extended: false }));
 tool.use(multer({ dest: __dirname + "/temp/"}).array('zip'));
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+tool.use(urlencodedParser);
 
 var admin_server = tool.listen(8081, function() {
     console.log("Backstage is working.");
@@ -94,6 +129,20 @@ tool.get('/', function(req, res) {
 });
 tool.get('/admin', function(req, res) {
     res.sendFile(__dirname + "/admin.html");
+});
+
+tool.post('/setname', urlencodedParser, function(req, res) {
+    var response = {
+	"first":req.body.first,
+	"second":req.body.second,
+	"third":req.body.third
+    };
+    console.log("Name changed:");
+    console.log(response);
+    first = response.first;
+    second = response.second;
+    third = response.third;
+    res.end("success");
 });
 
 tool.get('/packing', function(req, res) {
@@ -146,4 +195,10 @@ tool.post('/proupload', function(req, res) {
 	    }
 	}); 
     });
+});
+
+tool.get('/status', function(req, res) {
+    pause = !pause;
+    console.log(pause ? "status: lock" : "status: unlock");
+    res.end(pause ? "off" : "on"); 
 });

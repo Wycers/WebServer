@@ -1,4 +1,6 @@
 function check(target) {
+    if (target.files.length == 0)
+	return false;
     fileSize = target.files[0].size; 
     if (fileSize > 1024 * 1024) {
 	alert("文件大小超过1MB！");
@@ -14,19 +16,15 @@ function check(target) {
 	return false; 
     }
 
-    var filename = name.substring(name.lastIndexOf("\\") + 1, name.indexOf(".")).toLowerCase();
-    if (filename != "fac" && filename != "fifteen" && filename != "maze") {
-	alert("请按照题目规定的文件名上传！");
-	target.value = "";
-	return false;	
-    }
-    $("#show").val(filename + "." + type);
+    var filename = name.substring(name.lastIndexOf("\\") + 1, name.length).toLowerCase();
+    $("#show").val(filename);
     
     return true;
 }
 
 function QvQ() {
-    if ($("#name").val().indexOf(".") > -1 || $("#name").val().indexOf("/") > -1) {
+    var value = $("#name").val();
+    if (value.indexOf(".") > -1 || value.indexOf("/") > -1  || value.indexOf("|") > -1  || value.indexOf("+") > -1) {
 	$("#name").val("");
         $("#list").html("<li>请勿输入特殊字符。</li>");
         return;
@@ -51,15 +49,17 @@ function QvQ() {
 }
 
 function Runfast() {
-    if ($("#input").val() == "")
-	return false;
     $("#form").ajaxSubmit(function(message) {
 	if (message == "success") {
 	    alert("上传成功");
 	    QvQ();
 	}
+	else if (message == "illegal")
+	    alert("文件名不合法，请按照题目规定的文件名上传。");
 	else if (message == "packing")
 	    alert("正在进行代码拷贝工作，暂停上传，请稍候。");
+	else if (message == "pause")
+	    alert("服务器停止了上传和下载。");
 	else
 	    alert("上传失败");
     });
@@ -68,6 +68,16 @@ function Runfast() {
     return false; 
 }
 
+function download() {
+    $.get("/status", function(data, status) {
+	if (data == "off")
+	    alert("服务器停止了上传和下载。");
+	else if (data == "on")
+	    window.location.href = '/download';
+    });
+}
+
 $(document).ready(function(){
     $("#button").click(QvQ);
+    $("#download").click(download);
 });

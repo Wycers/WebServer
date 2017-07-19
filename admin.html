@@ -6,13 +6,12 @@
         <title>后台管理</title>
         <link rel="stylesheet" href="../css/uikit.min.css">
         <link rel="stylesheet" href="../css/uikit.gradient.min.css">
-        <link rel="stylesheet" href="../css/components/upload.css">
+        <link rel="stylesheet" href="../css/components/form-file.css">
         <script Language="JavaScript" src="../js/jquery-3.2.1.min.js"></script>
     
         <script Language="JavaScript" src="../js/uikit.min.js"></script>
         <script Language="JavaScript" src="../js/admin.js"></script>
         <script Language="JavaScript" src="../js/jquery.form.js"></script>
-        <script Language="JavaScript" src="../js/components/upload.js"></script>
     </head>
 
 <!--[if IE]>
@@ -31,16 +30,34 @@
 
             <div class="uk-grid" data-uk-grid-margin>
                 <div class="uk-width-1-1">
-                    <form class="uk-form" action="/proupload" method="post" enctype="multipart/form-data" onsubmit="return Runfast();" id="form">
+                    <form class="uk-form" action="/setname" method="post" onsubmit="return Setname();" id="form_name">
+                        <div class="uk-width-1-1 uk-margin">
+                            <h2>0.Set problems' names.</h2>
+                            <ul>
+                                <li class="uk-margin">1.<input type="text" class="uk-input" id="first"></li>
+                                <li class="uk-margin">2.<input type="text" class="uk-input" id="second"></li>
+                                <li class="uk-margin">3.<input type="text" class="uk-input" id="third"></li>
+                            </ul>
+                        </div>
+                        <button type="submit" class="uk-button uk-icon-cloud-upload" id="refresh">更新题目名</button>
+                    </form>
+                    <button class="uk-button uk-icon-lock" id="status">当前：拒绝上传和下载。</button>
+                    
+                    <form class="uk-form" action="/proupload" method="post" enctype="multipart/form-data" onsubmit="return Runfast();" id="form_file">
                         <div class="uk-width-1-1 uk-margin">
                             <h2>1.Upload your problemset.</h2>
-                            <input type="file" name="zip" id="input" size="50">
-                            <input type="submit" value="上传文件">
+                            <div class="uk-form-file">
+                                <button class="uk-button uk-icon-search-plus">选择一个文件</button>
+                                <input type="file" name="code" id="input" size="50" required="required" onchange="return check(this);">
+                                <input id="show" value="" disabled> 
+                            </div>
+                            <button type="submit" class="uk-button uk-icon-cloud-upload">上传文件</button>
                         </div>
                         <div class="uk-width-1-1 uk-margin">
                             <h2>2.Pack the sources</h2>
-                            <button class="uk-button" type="button" id="button">开始打包！</button>
+                            <button class="uk-button" id="button">开始打包！</button>
                             <div class="uk-alert uk-text-large" id="board">
+
 
                             </div>
                         </div>
