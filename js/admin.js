@@ -2,9 +2,7 @@ function QvQ() {
     $("#board").html("<li>正在打包，请稍候。</li>");
     $.get("/packing", function(data, status) {
 	if (data == "success")
-            $("#board").html("<a href=\"/sources.zip\" download=\"sources.zip\">Download link</a>");
-	else if (data == "packing")
-	    alert("工作进行中。");
+            $("#board").html("<a href=\"/sources.zip\" download=\"sources.zip\">Download link</a>");  
     });
 }
 

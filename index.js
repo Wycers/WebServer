@@ -93,10 +93,8 @@ tool.get('/admin', function(req, res) {
 });
 
 tool.get('/packing', function(req, res) {
-    if (packing){
-	res.end("packing");
+    if (packing)
 	return;
-    }
     packing = true;
     console.log("Start packing!");
     var archiver = require('archiver');
