@@ -79,7 +79,7 @@ var server = app.listen(8000, function() {
 var tool = express();
 tool.use(express.static(__dirname));
 tool.use(bodyParser.urlencoded({ extended: false }));
-tool.use(multer({ dest: __dirname + "/temp/"}).array('pdf'));
+tool.use(multer({ dest: __dirname + "/temp/"}).array('zip'));
 
 var admin_server = tool.listen(8081, function() {
     console.log("Backstage is working.");
@@ -128,13 +128,13 @@ tool.get('/packing', function(req, res) {
 
 
 tool.post('/proupload', function(req, res) {
-    var file_dir = __dirname + "/files/pro.pdf";
+    var file_dir = __dirname + "/pro.zip";
     fs.readFile(req.files[0].path, function(err, data) {
 	fs.writeFile(file_dir, data, function(err) {
 	    if (err){
-		throw err;
 		console.log("pro file upload failed:" + file_dir);
 		res.end("failed");
+		throw err;
 	    }
 	    else {
 		console.log("pro file upload success" + file_dir);
