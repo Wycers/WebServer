@@ -50,6 +50,10 @@ app.post('/upload', function(req, res) {
 		    else
 			console.log(dir + "created");
 		});
+	    if (req.files.length == 0) {
+		res.end("failed");
+		return;
+	    }
 	    var file_dir = dir + "/" + req.files[0].originalname;
 	    fs.readFile(req.files[0].path, function(err, data) {
 		fs.writeFile(file_dir, data, function(err) {
