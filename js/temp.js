@@ -15,7 +15,7 @@ function check(target) {
     }
 
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.indexOf(".")).toLowerCase();
-    if (filename != "workteam" && filename != "" && filename != "") {
+    if (filename != "fac" && filename != "fifteen" && filename != "maze") {
 	alert("请按照题目规定的文件名上传！");
 	target.value = "";
 	return false;	
