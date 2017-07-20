@@ -7,6 +7,7 @@ function check(target) {
 	target.value = "";
 	return false;
     }
+    var name = target.files[0].originalname;
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.length).toLowerCase();
     $("#show").val(filename);
     
