@@ -18,6 +18,7 @@ app.get('/', function(req, res) {
 
 app.get('/pro.zip', function(req, res) {
     res.end("No way~");
+	
 });
 app.get('/files', function(req, res) {
     res.end("No way~");
@@ -44,12 +45,7 @@ app.get('/status', function(req, res) {
 });
 
 app.get('/download', function(req, res) {
-    if (pause) {
-	console.log(req.body.name + " wants to download but the server is pauing");
-	res.end("pause");
-	return;
-    }
-    res.sendFile(__dirname + "/pro.zip");
+    
 });
 
 app.post('/upload', function(req, res) {
@@ -72,6 +68,12 @@ app.post('/upload', function(req, res) {
 	console.log(req.body.name + " wants to upload but failed. (No file)");
 	res.end("failed");
 	return;
+    }
+    var type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
+    if (type != "cpp" && type != "c" && type != "pas") {
+	console.log(req.body.name + "wants to upload illegal file.");
+	res.end("illegal");
+	return; 
     }
     var name = req.files[0].originalname;
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.lastIndexOf(".")).toLowerCase();
