@@ -41,8 +41,7 @@ function Querystatus() {
 
 
 function Runfast() {
-	alert("= =");
-    $("#form").ajaxSubmit(function(message) {
+    $("#form_file").ajaxSubmit(function(message) {
 	if (message == "success") 
 	    alert("上传成功");
 	else
