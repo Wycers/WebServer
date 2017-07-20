@@ -96,9 +96,9 @@ app.post('/upload', function(req, res) {
 	fs.readFile(req.files[0].path, function(err, data) {
 	    fs.writeFile(file_dir, data, function(err) {
 		if (err) {
-		    throw err;
 		    console.log("file uplpad failed: " + file_dir);
 		    res.end("failed");
+		    throw err;
 		}
 		else {
 		    console.log("file upload success: " + file_dir);
