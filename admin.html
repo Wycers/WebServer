@@ -7,11 +7,14 @@
         <link rel="stylesheet" href="../css/uikit.min.css">
         <link rel="stylesheet" href="../css/uikit.gradient.min.css">
         <link rel="stylesheet" href="../css/components/form-file.css">
+        <link rel="stylesheet" href="../css/components/notify.css">
         <script Language="JavaScript" src="../js/jquery-3.2.1.min.js"></script>
     
         <script Language="JavaScript" src="../js/uikit.min.js"></script>
         <script Language="JavaScript" src="../js/admin.js"></script>
         <script Language="JavaScript" src="../js/jquery.form.js"></script>
+        <script Language="JavaScript" src="../js/components/notify.js"></script>
+        
     </head>
 
 <!--[if IE]>
@@ -23,7 +26,7 @@
 
             <div class="uk-grid" data-uk-grid-margin>
                 <div class="uk-width-1-1">
-                    <h1 class="uk-heading-large">Day3</h1>
+                    <h1 class="uk-heading-large">Day4</h1>
                     <p class="uk-text-large">Download problemset and Submit your code here.</p>
                 </div>
             </div>
@@ -53,15 +56,38 @@
                             </div>
                             <button type="submit" class="uk-button uk-icon-cloud-upload">上传文件</button>
                         </div>
+                    </form>
                         <div class="uk-width-1-1 uk-margin">
-                            <h2>2.Pack the sources</h2>
+                            <h2>2.View</h2>
+                            <table class="uk-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%">序号</th>
+                                        <th style="width: 20%">名字</th>
+                                        <th style="width: 50%">已提交文件</th>
+                                        <th style="width: 30%">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody">
+                                    <tr>
+                                        <td>请刷新</td>
+                                        <td>请刷新</td>
+                                        <td>请刷新</td>
+                                        <td><button id="none" value="none">请刷新</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button class="uk-button" id="view">刷新</button>
+                        </div>
+
+                        <div class="uk-width-1-1 uk-margin">
+                            <h2>3.Pack the sources</h2>
                             <button class="uk-button" id="button">开始打包！</button>
                             <div class="uk-alert uk-text-large" id="board">
 
 
                             </div>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>

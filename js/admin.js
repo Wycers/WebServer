@@ -65,18 +65,68 @@ function Setname() {
         url: "/setname",
         data: GetJsonData(),
         success: function (message) {
-            if (message > 0) {
-                alert("请求已提交！我们会尽快与您取得联系");
-            }
+            UIkit.notify("<i class='uk-icon-check'></i>文件名修改成功！", {status:'success'});
         },
         error: function (message) {
-            $("#request-process-patent").html("提交数据失败！");
+            UIkit.notify("文件名修改失败。", {status:'danger'});
         }
     });
     return false;
 }
+function Getname() {
+    $.get('/name', function(data, status) {
+	if (status == "success") {
+	    var json = JSON.parse(data);
+	    $("#first").val(json.first);
+	    $("#second").val(json.second);
+	    $("#third").val(json.third);
+	}
+	else {
+	    UIkit.notify("文件名查询失败。", {status:'danger'});
+	}
+    });
+}
+
+function View() {
+    $.get('/query', function(data, status) {
+	if (status == "success") {
+	    var json = JSON.parse(data);
+            $("#tbody").html("");
+            for (var i in json) {
+		console.log(json[i]);
+		$("#tbody").append("<tr id=\"" + i + "\"></tr");
+		$("#" + i).append("<td>" + i + "</td>");
+		$("#" + i).append("<td>" + json[i].name + "</td>");
+		var file = json[i].file;
+		file = file.substring(0, file.length - 1);
+		$("#" + i).append("<td>" + file + "</td>");
+		$("#" + i).append("<td><button id='delete' value='" + json[i].name + "'>删除</button></td>");
+	    }
+	    $(document).on('click', '#delete', function(data) {
+		$.ajax({
+		    type: "POST",
+		    url: "/delete",
+		    data: {
+			only: data.target.value
+		    },
+		    success: function (message) {
+			UIkit.notify("<i class='uk-icon-check'></i>删除成功！", {status:'success'});
+		    },
+		    error: function (message) {
+			UIkit.notify("删除失败。", {status:'danger'});
+		    }
+		});
+	    });
+	}
+    });
+    
+}
+
+
 
 $(document).ready(function(){
+    Getname();
     $("#button").click(QvQ);
     $("#status").click(Querystatus);
+    $("#view").click(View);
 });

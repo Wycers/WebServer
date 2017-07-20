@@ -3,9 +3,9 @@ var app = express();
 var fs = require("fs");
 
 var bodyParser = require('body-parser');
-var multer  = require('multer');
+var multer = require('multer');
 
-var packing = false, pause = true;
+var packing = false, pause = true, querying = false;
 var first="", second="", third="";
 
 app.use(express.static(__dirname));
@@ -58,8 +58,13 @@ app.post('/upload', function(req, res) {
 	res.end("pause");
 	return;
     }
+    if (querying) {
+	console.log(req.body.name + " wants to upload but the server is querying.");
+	res.end("query");
+	return;
+    }
     if (packing) {
-	console.log(req.body.name + " wants to upload but the server is packing now.");
+	console.log(req.body.name + " wants to upload but the server is packing.");
 	res.end("packing");
 	return;
     }
@@ -103,8 +108,6 @@ app.post('/upload', function(req, res) {
     
 });
 
-
-
 var server = app.listen(8000, function() {
     console.log("Frontstage is working.");
 });
@@ -129,6 +132,47 @@ tool.get('/', function(req, res) {
 });
 tool.get('/admin', function(req, res) {
     res.sendFile(__dirname + "/admin.html");
+});
+
+tool.get('/name', function(req, res) {
+    var response = {
+	"first": first,
+	"second":second,
+	"third": third
+    };
+    res.end(JSON.stringify(response));
+});
+
+tool.get('/query', function(req, res) {
+    querying = true;
+    var root = __dirname + "/files";
+    var response = {};
+    fs.readdir(root, function (err, dirs) {
+	var cnt = 0;
+	for (var i = 0; i < dirs.length; ++i) {
+	    var dir = root + "/" + dirs[i];
+            var info = fs.statSync(dir);
+	    if (info.isDirectory() == false)
+		continue;
+	    
+	    var files = fs.readdirSync(dir);
+	    
+	    var val = "";
+	    for (var j = 0; j < files.length; ++j) {
+		var filename = files[j].substring(0, files[j].lastIndexOf("."));
+		if (filename == first || filename == second || filename == third)
+		    val += files[j] + "|";
+	    }
+	    var temp = {
+		name: dirs[i],
+		file: val
+	    };
+	    response[cnt++] = temp;
+	}
+	console.log(response);
+	res.end(JSON.stringify(response));
+	querying = false;
+    });
 });
 
 tool.post('/setname', urlencodedParser, function(req, res) {
@@ -179,6 +223,21 @@ tool.get('/packing', function(req, res) {
     archive.finalize();
 });
 
+tool.post('/delete', function(req, res) {
+    console.log(req.body.only);
+    var files = [];
+    var path = __dirname + "/files/" + req.body.only;
+    if( fs.existsSync(path) ) {
+        files = fs.readdirSync(path);
+        files.forEach(function(file, index){
+            var curPath = path + "/" + file;
+	    fs.unlinkSync(curPath);
+        });
+        fs.rmdirSync(path);
+    }
+    console.log("Catalog " + path + " deleted");
+    res.end("success");
+});
 
 tool.post('/proupload', function(req, res) {
     var file_dir = __dirname + "/pro.zip";

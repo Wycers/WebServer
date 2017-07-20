@@ -42,8 +42,9 @@ function QvQ() {
             var str = new Array();
             str = data.split("|");
             $("#list").html("");
-            for (var i = 0; i < str.length ;i++ ) 
-                $("#list").append("<li>" + str[i] + "</li>");
+            for (var i = 0; i < str.length ;i++ )
+		if (str[i] != "")
+                    $("#list").append("<li>" + str[i] + "</li>");
         }
     });
 }
@@ -54,6 +55,8 @@ function Runfast() {
 	    alert("上传成功");
 	    QvQ();
 	}
+	else if (message == "query")
+	    alert("正在进行代码检查工作，暂停上传，请稍候。");
 	else if (message == "illegal")
 	    alert("文件名不合法，请按照题目规定的文件名上传。");
 	else if (message == "packing")
