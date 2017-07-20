@@ -7,15 +7,6 @@ function check(target) {
 	target.value = "";
 	return false;
     }
-
-    var name = target.value;
-    var type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
-    if (type != "cpp" && type != "c" && type != "pas") {
-	alert("请上传*.cpp/*.c/*.pas！");
-	target.value = "";
-	return false; 
-    }
-
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.length).toLowerCase();
     $("#show").val(filename);
     
