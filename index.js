@@ -240,6 +240,7 @@ tool.post('/delete', function(req, res) {
 });
 
 tool.post('/proupload', function(req, res) {
+	console.log("receive");
     var file_dir = __dirname + "/pro.zip";
     fs.readFile(req.files[0].path, function(err, data) {
 	fs.writeFile(file_dir, data, function(err) {
