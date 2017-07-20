@@ -69,13 +69,13 @@ app.post('/upload', function(req, res) {
 	res.end("failed");
 	return;
     }
+    var name = req.files[0].originalname;
     var type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
     if (type != "cpp" && type != "c" && type != "pas") {
 	console.log(req.body.name + "wants to upload illegal file.");
 	res.end("illegal");
 	return; 
     }
-    var name = req.files[0].originalname;
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.lastIndexOf(".")).toLowerCase();
     if (filename != first && filename != second && filename != third) {
 	res.end("illegal");
