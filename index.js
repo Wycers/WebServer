@@ -52,6 +52,7 @@ app.get('/status', function(req, res) {
 app.get('/problem.zip', function(req, res) {
     if (pause)
 	    res.end("");
+    console.log("Someone downloads the problemset.");
     res.sendFile(__dirname + "/pro.zip");
 });
 
