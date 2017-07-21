@@ -68,7 +68,7 @@ function download() {
 	if (data == "off")
 	    alert("服务器停止了上传和下载。");
 	else if (data == "on")
-	    window.location.href = '/download';
+	    window.location.href = '/download.zip';
     });
 }
 
