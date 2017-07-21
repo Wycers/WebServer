@@ -49,8 +49,10 @@ app.get('/status', function(req, res) {
     res.end(pause ? "off" : "on");
 });
 
-app.get('/download', function(req, res) {
-    
+app.get('/problem.zip', function(req, res) {
+    if (pause)
+	    res.end("");
+    res.sendFile(__dirname + "/pro.zip");
 });
 
 app.post('/upload', function(req, res) {
