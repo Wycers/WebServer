@@ -20,6 +20,11 @@ app.get('/pro.zip', function(req, res) {
     res.end("No way~");
 	
 });
+
+app.get('admin.html', function(req, res){
+    res.end("No way~");
+});
+
 app.get('/files', function(req, res) {
     res.end("No way~");
 });
