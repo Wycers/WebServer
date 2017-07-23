@@ -44,8 +44,10 @@
                         </div>
                         <button type="submit" class="uk-button uk-icon-cloud-upload" id="refresh">更新题目名</button>
                     </form>
-                    <button class="uk-button uk-icon-lock" id="status">当前：拒绝上传和下载。</button>
-                    
+                    <button class="uk-button uk-icon-lock" id="status">当前：拒绝上传和下载</button>
+                    <button class="uk-button uk-icon-lock" id="permit">当前：拒绝新建用户</button>
+                    <button class="uk-button uk-icon-lock" id="wd">将当前的map数据写入文件</button>
+                    <button class="uk-button uk-icon-lock" id="rd">从文件读取map数据</button>
                     <form class="uk-form" action="/proupload" method="post" enctype="multipart/form-data" onsubmit="return Runfast();" id="form_file">
                         <div class="uk-width-1-1 uk-margin">
                             <h2>1.Upload your problemset.</h2>

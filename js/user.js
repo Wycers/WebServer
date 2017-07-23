@@ -55,6 +55,8 @@ function Runfast() {
 	    alert("正在进行代码拷贝工作，暂停上传，请稍候。");
 	else if (message == "pause")
 	    alert("服务器停止了上传和下载。");
+	else if (message == "help")
+	    alert("服务器拒绝了您的请求，请联系机房老师。");
 	else
 	    alert("上传失败");
     });
@@ -75,4 +77,17 @@ function download() {
 $(document).ready(function(){
     $("#button").click(QvQ);
     $("#download").click(download);
+
+    $.get("/name", function(data, status) {
+	if (status == "success") {
+	    if (data == "nil")
+		alert("无法提供服务，请联系机房老师。");
+	    else {
+		$("#name").val(data);
+		QvQ();
+	    }
+	}
+	else
+	    alert("无法提供服务，请联系机房老师。");
+    });
 });

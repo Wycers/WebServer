@@ -1,19 +1,74 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
+var name = {};
 
+function input() {
+    fs.readFile(__dirname + "/ip.json", function (err, data) {
+	console.log("开始持久化：读入文件");
+	if (err) {
+	    console.log("持久化失败。");
+	    return;
+	}
+	var json = JSON.parse(data);
+	for (var i in json) 
+	    name[json[i].ip] = json[i].name;
+	console.log("持久化成功。");
+	console.log(json);
+    });
+}
+input();
+   
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
-var packing = false, pause = true, querying = false;
+var pause = true, querying = false, permit = false;
 var first="", second="", third="";
 
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ dest: __dirname + "/temp/"}).array('code'));
 
+function getClientIp(req) {
+    return req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+};
+
+function getname(req) {
+    var tmp = getClientIp(req);
+    return name[tmp];
+}
+
 app.get('/', function(req, res) {
-    res.sendFile( __dirname + "/" + "index.html");
+    var tmp = getClientIp(req);
+    if (typeof(name[tmp]) == 'undefined') 
+	res.sendFile(__dirname + "/login.html");
+    else
+	res.sendFile(__dirname + "/user.html");
+});
+
+app.get('/name', function(req, res) {
+    var usr = getname(req);
+    if (typeof(usr) == 'undefined') {
+	res.end("nil");
+	return;
+    }
+    res.end(usr);
+});
+
+
+
+app.post('/login', function(req, res) {
+    if (permit == false) {
+	res.end("close");
+	return;
+    }
+    var tmp = getClientIp(req);
+    name[tmp] = req.body.name;
+    console.log("combine " + tmp + " with " + req.body.name);
+    res.end("success");
 });
 
 app.get('/pro.zip', function(req, res) {
@@ -21,7 +76,7 @@ app.get('/pro.zip', function(req, res) {
 	
 });
 
-app.get('admin.html', function(req, res){
+app.get('admin.html', function(req, res) {
     res.end("No way~");
 });
 
@@ -60,30 +115,31 @@ app.get('/problem.zip', function(req, res) {
 });
 
 app.post('/upload', function(req, res) {
+    var usr = getname(req);
+    if (typeof(usr) == 'undefined') {
+	console.log(req.body.name + "(" + getClientIp(req) +  ")" + " wants to upload but has no name.");
+	res.end("help");
+	return;
+    }
     if (pause) {
-	console.log(req.body.name + " wants to upload but the server is pausing");
+	console.log(usr + " wants to upload but the server is pausing");
 	res.end("pause");
 	return;
     }
     if (querying) {
-	console.log(req.body.name + " wants to upload but the server is querying.");
+	console.log(usr + " wants to upload but the server is querying.");
 	res.end("query");
 	return;
     }
-    if (packing) {
-	console.log(req.body.name + " wants to upload but the server is packing.");
-	res.end("packing");
-	return;
-    }
     if (req.files.length == 0) {
-	console.log(req.body.name + " wants to upload but failed. (No file)");
+	console.log(usr + " wants to upload but failed. (No file)");
 	res.end("failed");
 	return;
     }
     var name = req.files[0].originalname;
     var type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
     if (type != "cpp" && type != "c" && type != "pas") {
-	console.log(req.body.name + "wants to upload illegal file.");
+	console.log(usr + " wants to upload illegal file.");
 	res.end("illegal");
 	return; 
     }
@@ -92,27 +148,28 @@ app.post('/upload', function(req, res) {
 	res.end("illegal");
 	return;
     }
-
     
-    var dir = __dirname + "/files/" + req.body.name;
+    var dir = __dirname + "/files/" + usr;
     fs.exists(dir, function(exists) {
 	if (exists == false)
 	    fs.mkdir(dir, 0777, function(err) {
-		if (err) 
-		    throw err;
+		if (err) {
+		    res.end("Failed to make dir." + usr + " Upload failed.");
+		    return;
+		}
 		else
-		    console.log(dir + "created");
+		    console.log(dir + " created");
 	    });
-	var file_dir = dir + "/" + req.files[0].originalname;
+	var file_dir = dir + "/" + name;
 	fs.readFile(req.files[0].path, function(err, data) {
 	    fs.writeFile(file_dir, data, function(err) {
 		if (err) {
-		    console.log("file uplpad failed: " + file_dir);
+		    console.log("==>WARNING:  " + usr + " wants to upload " + name + " but failed."  );
 		    res.end("failed");
-		    throw err;
+		    return;
 		}
 		else {
-		    console.log("file upload success: " + file_dir);
+		    console.log("Success:  " + usr + " uploaded " + name);
 		    res.end("success");
 		}
 	    }); 
@@ -203,9 +260,9 @@ tool.post('/setname', urlencodedParser, function(req, res) {
 });
 
 tool.get('/packing', function(req, res) {
-    if (packing)
+    if (querying)
 	return;
-    packing = true;
+    querying = true;
     console.log("Start packing!");
     var archiver = require('archiver');
     var output = fs.createWriteStream(__dirname + '/sources.zip');
@@ -216,7 +273,7 @@ tool.get('/packing', function(req, res) {
     output.on('close', function() {
 	console.log(archive.pointer() + ' total bytes');
 	console.log('End packing.');
-	packing = false;
+	querying = false;
 	res.end("success");
     });
 
@@ -270,7 +327,44 @@ tool.post('/proupload', function(req, res) {
 });
 
 tool.get('/status', function(req, res) {
+    console.log("?");
     pause = !pause;
     console.log(pause ? "status: lock" : "status: unlock");
     res.end(pause ? "off" : "on"); 
+});
+
+tool.get('/permit', function(req, res) {
+    permit = !permit;
+    console.log(permit ? "允许新建用户" : "拒绝新建用户");
+    res.end(permit ? "on" : "off");
+});
+
+tool.get('/writedown', function(req, res) {
+    console.log("开始持久化: 写出文件");
+    var result = [], cnt = 0;
+    for (var i in name) {
+	console.log(i);
+	var temp = {
+	    ip: i,
+	    name: name[i]
+	};
+	result[cnt++] = temp;
+    }
+    var str = JSON.stringify(result);
+    fs.writeFile(__dirname + "/ip.json", str, function(error) {
+	if (error) {
+	    res.end("failed");
+	    console.log("持久化失败，写入文件时发生错误");
+	    return;
+	}
+	res.end("success");
+	console.log("持久化成功");
+    });
+});
+
+tool.get('/rd', function(req, res) {
+    if (input())
+	res.end("success");
+    else
+	res.end("failed");
 });

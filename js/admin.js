@@ -39,6 +39,21 @@ function Querystatus() {
     });
 }
 
+function Querypermit() {
+    $.get("/permit", function(data, status) {
+	if (data == "on") {
+	    $("#permit").html("当前：允许新建用户");
+	    $("#permit").addClass("uk-icon-unlock-alt");
+	    $("#permit").removeClass("uk-icon-lock");
+	}
+	else if (data == "off") {
+	    $("#permit").html("当前：拒绝新建用户");
+	    $("#permit").removeClass("uk-icon-unlock-alt");
+	    $("#permit").addClass("uk-icon-lock");
+	}
+    });
+}
+
 
 function Runfast() {
     $("#form_file").ajaxSubmit(function(message) {
@@ -122,11 +137,31 @@ function View() {
     
 }
 
+function writedown() {
+    $.get('/writedown', function(data, status) {
+	if (data == "success")
+	    alert("持久化成功！");
+	else
+	    alert("持久化失败！");
+    });
+}
 
+function read() {
+    $.get('/rd', function(data, status) {
+	alert(data);
+	if (data == "success")
+	    alert("持久化成功");
+	else
+	    alert("持久化失败");
+    });
+}
 
 $(document).ready(function(){
     Getname();
     $("#button").click(QvQ);
     $("#status").click(Querystatus);
     $("#view").click(View);
+    $("#permit").click(Querypermit);
+    $("#wd").click(writedown);
+    $("#rd").click(read);
 });

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ch-zn" dir="ltr" class="uk-height-1-1">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>福建省信息学竞赛夏令营</title>
+        <link rel="stylesheet" href="../css/uikit.min.css">
+        <link rel="stylesheet" href="../css/components/form-file.css">
+        <link rel="stylesheet" href="../css/uikit.gradient.min.css">
+        <script Language="JavaScript" src="../js/jquery-3.2.1.min.js"></script>
+    
+        <script Language="JavaScript" src="../js/uikit.min.js"></script>
+        <script Language="JavaScript" src="../js/user.js"></script>
+        <script Language="JavaScript" src="../js/jquery.form.js"></script>
+        <style type="text/css">
+            h1,h2 {color: white}
+            p {color: white}
+        </style>
+    </head>
+
+<!--[if IE]>
+	<body>请使用Chrome打开本页面。</body>
+<!--[if !IE]> -->
+    <body class="uk-height-1-1" style="background-image: url(https://api.dujin.org/bing/1920.php)">
+
+        <div class="uk-container uk-container-center">
+            <div class="uk-width-1-2" style="border-radius:5px 5px 5px 5px; background-color: rgba(0,0,0,0.5);">
+                <div class="uk-margin-left uk-margin-large-top" data-uk-grid-margin>
+                    <div class="uk-width-1-1">
+                        <h1 class="uk-heading-large">Day7</h1>
+                        <p class="uk-text-large">Download problemset and Submit your code here.</p>
+                    </div>
+                </div>
+            	<div class="uk-margin-large-left">
+            		<h2>1.Download the problemset.</h2>
+                    <button class="uk-button uk-button-small uk-text-large uk-icon-cloud-download" id="download">ProblemSet.zip</a>
+            	</div>
+                <form class="uk-form" action="/upload" method="post" enctype="multipart/form-data" onsubmit="return Runfast();" id="form">
+                	<div class="uk-margin-large-left">
+                		<h2>2.Check your file.</h2>
+                		<input type="text" maxlength="10" required="required" disabled id="name"/>
+                        <button class="uk-button uk-icon-eye" type="button" id="button">检查已上传的文件</button>
+                        <p class="uk-text-middle uk-text-warning">用于检索目录中的所有文件</p>
+                        <ul class="uk-list uk-list-striped uk-width-2-3" id="list">
+                            <li>暂无结果</li>
+                        </ul>
+                    </div>
+
+                	<div class="uk-margin-large-left uk-margin-right">
+                		<h2>3.Upload your file.</h2>
+                        <div class="uk-form-file">
+                            <button class="uk-button uk-icon-search-plus">选择一个文件</button>
+                            <input type="file" name="code" id="input" size="50" required="required" onchange="return check(this);">
+                            <input id="show" value="" disabled> 
+                        </div>
+                        <button type="submit" class="uk-button uk-icon-cloud-upload">上传文件</button>
+                        <p class="uk-text-middle uk-text-warning">只接受后缀名为cpp/c/pas、且文件名按题目规定的文件 之后提交的文件将覆盖之前的相同文件</p>
+                    </div>
+            	</form>
+              
+            </div>
+        </div>
+    </body>
+<!--<![endif]-->
+</html>
