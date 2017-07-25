@@ -14,14 +14,13 @@
         <script Language="JavaScript" src="../js/jquery.form.js"></script>
         <style type="text/css">
             h1,h2 {color: white}
-            p {color: white}
         </style>
     </head>
 
 <!--[if IE]>
 	<body>请使用Chrome打开本页面。</body>
 <!--[if !IE]> -->
-    <body class="uk-height-1-1" style="background-image: url(https://api.dujin.org/bing/1920.php)">
+    <body class="uk-height-1-1" style="background-image: url(bkg.jpg)">
 
         <div class="uk-container uk-container-center">
             <div class="uk-width-1-2" style="border-radius:5px 5px 5px 5px; background-color: rgba(0,0,0,0.5);">
@@ -41,9 +40,7 @@
                 		<input type="text" maxlength="10" required="required" disabled id="name"/>
                         <button class="uk-button uk-icon-eye" type="button" id="button">检查已上传的文件</button>
                         <p class="uk-text-middle uk-text-warning">用于检索目录中的所有文件</p>
-                        <ul class="uk-list uk-list-striped uk-width-2-3" id="list">
-                            <li>暂无结果</li>
-                        </ul>
+                        <p class="uk-text-large uk-text-success" id="files">暂无结果</p>
                     </div>
 
                 	<div class="uk-margin-large-left uk-margin-right">

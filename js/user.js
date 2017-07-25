@@ -1,50 +1,42 @@
 function check(target) {
-    if (target.files.length == 0)
-	return false;
-    fileSize = target.files[0].size; 
-    if (fileSize > 1024 * 1024) {
-	alert("文件大小超过1MB！");
-	target.value = "";
-	return false;
-    }
     var name = target.value;
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.length).toLowerCase();
     $("#show").val(filename);
-    
     return true;
 }
 
 function QvQ() {
-    var value = $("#name").val();
-    if (value.indexOf(".") > -1 || value.indexOf("/") > -1  || value.indexOf("|") > -1  || value.indexOf("+") > -1) {
-	$("#name").val("");
-        $("#list").html("<li>请勿输入特殊字符。</li>");
-        return;
-    }
-    if ($("#name").val() == "") {
-        $("#list").html("<li>请勿留空。</li>");
-        return;
-    }
-    $.get("/query?usr=" + $("#name").val(), function(data, status) {
-        if (data == "nil") 
-            $("#list").html("<li>该目录不存在。（目录将在上传文件时自动生成）</li>");
-        else if (data == "")
-            $("#list").html("<li>该目录下没有文件。</li>");
+    $.get("/query", function(data, status) {
+        if (data == "nil") {
+	    $("#files").show();
+	    $("#files").html("没有该目录，目录将自动生成。");
+	}
+        else if (data == "") {
+	    $("#files").show();
+	    $("#files").html("没有文件");
+	}
         else {
-            var str = new Array();
+	    var str = new Array();
             str = data.split("|");
-            $("#list").html("");
-            for (var i = 0; i < str.length ;i++ )
-		if (str[i] != "")
-                    $("#list").append("<li>" + str[i] + "</li>");
+	    var sth = "";
+	    for (var i = 0; i < str.length - 2; ++i) {
+		sth = sth + str[i] + ", ";
+	    }
+	    sth = sth + str[str.length - 2];
+	    $("#files").html(sth);
+	    
         }
     });
 }
 
 function Runfast() {
     $("#form").ajaxSubmit(function(message) {
-	if (message == "success") {
-	    alert("上传成功");
+	if (message.substring(0, 7) == "success") {
+	    alert("上传成功，您的文件保存在" + message.substring(8, message.length) + "目录下。");
+	    if ($("#name").val() != message.substring(8, message.length)) {
+		alert("已经将您的名字更新= =");
+		$("#name").val(message.substring(8, message.length));
+	    }
 	    QvQ();
 	}
 	else if (message == "query")
@@ -57,6 +49,8 @@ function Runfast() {
 	    alert("服务器停止了上传和下载。");
 	else if (message == "help")
 	    alert("服务器拒绝了您的请求，请联系机房老师。");
+	else if (message == "large")
+	    alert("文件大小超过1MB!");
 	else
 	    alert("上传失败");
     });

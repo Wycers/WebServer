@@ -1,10 +1,13 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
-var name = {};
+var name;
+
 
 function input() {
+    querying = true;
     fs.readFile(__dirname + "/ip.json", function (err, data) {
+	name = [];
 	console.log("开始持久化：读入文件");
 	if (err) {
 	    console.log("持久化失败。");
@@ -13,9 +16,12 @@ function input() {
 	var json = JSON.parse(data);
 	for (var i in json) 
 	    name[json[i].ip] = json[i].name;
+	for (var i in name)
+	    console.log(i + " " + name[i]);
 	console.log("持久化成功。");
-	console.log(json);
+	querying = false;
     });
+	
 }
 input();
    
@@ -61,13 +67,36 @@ app.get('/name', function(req, res) {
 
 
 app.post('/login', function(req, res) {
+    var usr = getClientIp(req);
+    if (typeof(usr) != 'undefined') {
+	console.log(usr + "has logined in.");
+	res.end("success");
+	return;
+    }
     if (permit == false) {
+	console.log(req.body.name + " wants to login but rejected.");
 	res.end("close");
 	return;
     }
-    var tmp = getClientIp(req);
-    name[tmp] = req.body.name;
-    console.log("combine " + tmp + " with " + req.body.name);
+    var value = req.body.name;
+    if (value == "") {
+	res.end("illegal");
+        return;
+    }
+    if (value.indexOf(".") > -1 || value.indexOf("/") > -1  || value.indexOf("|") > -1  || value.indexOf("+") > -1) {
+	res.end("illegal");
+        return;
+    }
+    if (value[0] == " " || value[value.length - 1] == " ") {
+	res.end("space");
+	return;
+    }
+    if (value == "noip2017") {
+	res.end("noip2017");
+	return;
+    }
+    name[usr] = req.body.name;
+    console.log("combine " + usr + " with " + req.body.name);
     res.end("success");
 });
 
@@ -85,7 +114,13 @@ app.get('/files', function(req, res) {
 });
 
 app.get('/query', function(req, res) {
-    var dir = __dirname + "/files/" + req.query.usr;
+    var usr = getname(req);
+    if (typeof(usr) == 'undefined') {
+	console.log(req.body.name + "(" + getClientIp(req) +  ")" + " wants to query but has no name.");
+	res.end("help");
+	return;
+    }
+    var dir = __dirname + "/files/" + usr;
     fs.exists(dir, function(exists) {
 	if (exists == false)
 	    res.end("nil"); 
@@ -93,6 +128,8 @@ app.get('/query', function(req, res) {
 	    fs.readdir(dir, function (err, files) {
 		var str = "";
 		for (var i = 0; i < files.length; ++i) {
+		    if (files[i][0] == '.')
+			continue;
 		    str = str + files[i] + "|";
 		}
 		res.end(str);
@@ -136,10 +173,15 @@ app.post('/upload', function(req, res) {
 	res.end("failed");
 	return;
     }
+    if (req.files[0].size > 1024 * 1024) {
+	console.log(usr + " wants to upload a big file.");
+	res.end("large");
+	return;
+    }
     var name = req.files[0].originalname;
     var type = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
     if (type != "cpp" && type != "c" && type != "pas") {
-	console.log(usr + " wants to upload illegal file.");
+	console.log(usr + " wants to upload a illegal file.");
 	res.end("illegal");
 	return; 
     }
@@ -170,7 +212,7 @@ app.post('/upload', function(req, res) {
 		}
 		else {
 		    console.log("Success:  " + usr + " uploaded " + name);
-		    res.end("success");
+		    res.end("success|" + usr);
 		}
 	    }); 
 	});
@@ -327,7 +369,6 @@ tool.post('/proupload', function(req, res) {
 });
 
 tool.get('/status', function(req, res) {
-    console.log("?");
     pause = !pause;
     console.log(pause ? "status: lock" : "status: unlock");
     res.end(pause ? "off" : "on"); 
@@ -363,8 +404,6 @@ tool.get('/writedown', function(req, res) {
 });
 
 tool.get('/rd', function(req, res) {
-    if (input())
-	res.end("success");
-    else
-	res.end("failed");
+    input();
+    res.end("success");
 });

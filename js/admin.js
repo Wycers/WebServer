@@ -148,7 +148,6 @@ function writedown() {
 
 function read() {
     $.get('/rd', function(data, status) {
-	alert(data);
 	if (data == "success")
 	    alert("持久化成功");
 	else

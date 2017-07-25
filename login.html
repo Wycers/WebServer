@@ -12,7 +12,10 @@
         <script Language="JavaScript" src="../js/login.js"></script>
     </head>
 
-    <body class="uk-height-1-1" style="background-image: url(https://api.dujin.org/bing/1920.php)">
+<!--[if IE]>
+    <body>请使用Chrome打开本页面。</body>
+<!--[if !IE]> -->
+    <body class="uk-height-1-1" style="background-image: url(bkg.jpg)">
 		<div class="uk-vertical-align uk-text-center uk-height-1-1">
             <div class="uk-vertical-align-middle" style="width: 250px;">
 
@@ -20,10 +23,10 @@
 
                 <form id="form" class="uk-panel uk-panel-box uk-form" method="post" action="/login" onsubmit="return Submit();">
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1 uk-form-large" name="name" maxlength="10" required="required" id="name" type="text" placeholder="Username">
+                        <input class="uk-width-1-1 uk-form-large" name="num" maxlength="10" required="required" id="num" type="text" placeholder="准考证号">
                     </div>
-                    <div class="uk-margin">
-                        <p>在这里输入学校+姓名。</p>
+                    <div class="uk-form-row">
+                        <input class="uk-width-1-1 uk-form-large" name="name" maxlength="10" required="required" id="name" type="text" placeholder="姓名">
                     </div>
                     <div class="uk-form-row">
                         <button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large">Login</button> 
@@ -32,7 +35,6 @@
 
             </div>
         </div>
-
     </body>
-
+<!--<![endif]-->
 </html>
