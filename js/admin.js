@@ -69,7 +69,8 @@ function GetJsonData() {
     var json = {
 	first: $("#first").val(),
 	second: $("#second").val(),
-	third: $("#third").val()
+	third: $("#third").val(),
+	fourth: $("#fourth").val()
     };
     console.log(json);
     return json;
@@ -95,6 +96,7 @@ function Getname() {
 	    $("#first").val(json.first);
 	    $("#second").val(json.second);
 	    $("#third").val(json.third);
+	    $("#fourth").val(json.fourth);
 	}
 	else {
 	    UIkit.notify("文件名查询失败。", {status:'danger'});

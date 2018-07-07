@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
-var name;
+var name, code;
 
 
 function input() {
@@ -18,18 +18,37 @@ function input() {
 	    name[json[i].ip] = json[i].name;
 	for (var i in name)
 	    console.log(i + " " + name[i]);
-	console.log("持久化成功。");
+	console.log("IP to name 持久化成功。");
 	querying = false;
-    });
-	
+    });	
 }
 input();
+
+function input2() {
+    querying = true;
+    fs.readFile(__dirname + "/num.json", function (err, data) {
+	code = [];
+	console.log("开始持久化：读入文件");
+	if (err) {
+	    console.log("持久化失败。");
+	    return;
+	}
+	var json = JSON.parse(data);
+	for (var i in json) 
+	    code[json[i].code] = json[i].name;
+	for (var i in code)
+	    console.log(i + ":" + code[i]);
+	console.log("Code to name 持久化成功。");
+	querying = false;
+    });	
+}
+input2();
    
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
 var pause = true, querying = false, permit = false;
-var first="", second="", third="";
+var first="", second="", third="", fourth = "";
 
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -68,7 +87,7 @@ app.get('/name', function(req, res) {
 
 app.post('/login', function(req, res) {
     var usr = getClientIp(req);
-    if (typeof(usr) != 'undefined') {
+    if (typeof(name[usr]) != 'undefined') {
 	console.log(usr + "has logined in.");
 	res.end("success");
 	return;
@@ -95,14 +114,27 @@ app.post('/login', function(req, res) {
 	res.end("noip2017");
 	return;
     }
-    name[usr] = req.body.name;
-    console.log("combine " + usr + " with " + req.body.name);
+    var num = req.body.num;
+    if (typeof(code[num]) == 'undefined') {
+	res.end("unknown");
+	return;
+    }
+    if (req.body.name != code[num]) {
+	res.end("uncop");
+	return;
+    }
+    name[usr] = num;
+    console.log("combine " + usr + " with " + num);
     res.end("success");
 });
 
 app.get('/pro.zip', function(req, res) {
     res.end("No way~");
 	
+});
+
+app.get('user.html', function(req,res) {
+    res.end("No way~");
 });
 
 app.get('admin.html', function(req, res) {
@@ -186,7 +218,7 @@ app.post('/upload', function(req, res) {
 	return; 
     }
     var filename = name.substring(name.lastIndexOf("\\") + 1, name.lastIndexOf(".")).toLowerCase();
-    if (filename != first && filename != second && filename != third) {
+    if (filename != first && filename != second && filename != third && filename != fourth) {
 	res.end("illegal");
 	return;
     }
@@ -250,7 +282,8 @@ tool.get('/name', function(req, res) {
     var response = {
 	"first": first,
 	"second":second,
-	"third": third
+	"third": third,
+	"fourth": fourth
     };
     res.end(JSON.stringify(response));
 });
@@ -272,7 +305,7 @@ tool.get('/query', function(req, res) {
 	    var val = "";
 	    for (var j = 0; j < files.length; ++j) {
 		var filename = files[j].substring(0, files[j].lastIndexOf("."));
-		if (filename == first || filename == second || filename == third)
+		if (filename == first || filename == second || filename == third || filename == fourth)
 		    val += files[j] + "|";
 	    }
 	    var temp = {
@@ -291,13 +324,15 @@ tool.post('/setname', urlencodedParser, function(req, res) {
     var response = {
 	"first":req.body.first,
 	"second":req.body.second,
-	"third":req.body.third
+	"third":req.body.third,
+	"fourth":req.body.fourth
     };
     console.log("Name changed:");
     console.log(response);
     first = response.first;
     second = response.second;
     third = response.third;
+    fourth = response.fourth;
     res.end("success");
 });
 

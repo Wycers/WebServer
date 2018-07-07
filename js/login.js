@@ -1,10 +1,12 @@
 function Submit() {
-    if(window.confirm("你确定要使用" + $("#name").val() + "作为目录名吗？") == false) 
-        return false;
     $("#form").ajaxSubmit(function(message) {
 	if (message == "success") {
 	    window.location.reload(true);
 	}
+	else if (message == "unknown")
+	    alert("未知选手，请联系老师。");
+	else if (message == "uncop")
+	    alert("准考证号与名字不对应。");
 	else if (message == "close")
 	    alert("服务器关闭了登陆通道。请联系老师。");
 	else if (message == "illegal")
