@@ -8,7 +8,8 @@
   },
   "author": "onbing",
   "dependencies": {
-      "express": "^4.13.4",
-      "nodemon": "~1.8.1"
+    "express": "^4.13.4",
+    "multer": "^1.3.1",
+    "nodemon": "~1.8.1"
   }
 }

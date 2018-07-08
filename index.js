@@ -26,7 +26,7 @@ input();
 
 function input2() {
     querying = true;
-    fs.readFile(__dirname + "/num.json", function (err, data) {
+    fs.readFile(__dirname + "/account.json", function (err, data) {
 	code = [];
 	console.log("开始持久化：读入文件");
 	if (err) {
@@ -35,7 +35,7 @@ function input2() {
 	}
 	var json = JSON.parse(data);
 	for (var i in json) 
-	    code[json[i].code] = json[i].name;
+	    code[json[i].usr] = json[i].pwd;
 	for (var i in code)
 	    console.log(i + ":" + code[i]);
 	console.log("Code to name 持久化成功。");
